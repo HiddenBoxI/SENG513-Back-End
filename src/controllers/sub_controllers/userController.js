@@ -15,7 +15,7 @@ router.post('/loginApi', async (ctx) => {
         };
     } catch ({ message }) {
         if (message === '400') {
-            ctx.status = 400;
+            // ctx.status = 400;
             ctx.body = {
                 code: 400,
                 message: 'cannot find the user',
@@ -23,7 +23,7 @@ router.post('/loginApi', async (ctx) => {
             
         }
         if (message === '401') {
-            ctx.status = 400;
+            // ctx.status = 400;
             ctx.body = {
                 code: 401,
                 message: 'password incorrect',
@@ -43,7 +43,7 @@ router.post('/signInApi',async (ctx) => {
         };
     } catch ({ message }) {
         if (message === '402') {
-            ctx.status = 400;
+            // ctx.status = 400;
             ctx.body = {
                 code: 402,
                 message: 'User already exists',
