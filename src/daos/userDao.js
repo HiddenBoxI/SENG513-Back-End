@@ -9,10 +9,14 @@ Date.prototype.format = dateformat;
 
 // console.log("connection",connection);
 
+const tableName = 't_user';
+
 export const getUserByNickname = async nickname => {
+    console.log('nickname',nickname);
     const [rows] = await connection
         .promise()
-        .execute('select * from t_user where `nickname` = ?', [nickname]);
+        .execute(`select * from ${tableName} where nickname = ?`, [nickname]);
+    console.log('rows',rows);
     return rows;
 };
 
@@ -31,7 +35,7 @@ export const insertUser = async (nickname, password) => {
         const res = await connection
             .promise()
             .execute(
-                'insert into t_user (nickname, password, create_at, update_at) values (?,?,?,?)',
+                `insert into ${tableName} (nickname, password, create_at, update_at) values (?,?,?,?)`,
                 [nickname, password, now, now]
             );
         return res[0].affectedRows;

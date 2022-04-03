@@ -7,8 +7,7 @@ export const login = async (nickname, password) => {
     if (resArr.length === 0) {
         throw Error(400);
     }
-    const { resPassword } = resArr[0];
-    if (resPassword !== password) {
+    if (resArr[0].password !== password) {
         throw Error(401);
     }
 };
