@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <div class="title">聊天室</div>
+            <button id="sub">发送</button>
+            <input type="text" id="textbar" class="textbar" />
+            <div class="chatblock" id="chatblock"></div>
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            // import io from 'socket.io'; 
+            const socket = io();
+            document.getElementById("sub").onclick = (e) => {
+                e.preventDefault();
+                const textBarVal = document.getElementById("textbar").value;
+                socket.emit("message", textBarVal);
+                document.getElementById("textbar").value = "";
+            };
+            socket.on("echo", (data) => {
+                console.log(data);
+                let newDiv = document.createElement("div");
+                newDiv.innerText = data;
+                document.getElementById("chatblock").appendChild(newDiv);
+            });
+
+            document.getElementById("textbar").onkeypress = (e) => {
+                if(e.which === 13){
+                    socket.emit(
+                        "message",
+                        document.getElementById("textbar").value
+                    );
+                    document.getElementById("textbar").value = "";
+                }
+            };
+        </script>
+    </body>
+</html>
