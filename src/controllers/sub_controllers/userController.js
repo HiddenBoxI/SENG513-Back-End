@@ -7,8 +7,8 @@ router.post('/loginApi', async (ctx) => {
     const { nickname, password } = ctx.request.body;
 
     try {
-        const res = await login(nickname, password);
-        console.log('res', res);
+        await login(nickname, password);
+        // console.log('res', res);
         ctx.body = {
             code: 200,
             message: 'Logged in',
