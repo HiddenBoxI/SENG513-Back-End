@@ -1,0 +1,27 @@
+import { getUserByNickname, insertUser } from '#src/daos/userDao.js';
+
+export const login = async (nickname, password) => {
+    // const [rows] = userResult();
+    // return rows;
+    const resArr = await getUserByNickname(nickname);
+    if (resArr.length === 0) {
+        throw Error(400);
+    }
+    const { resPassword } = resArr[0];
+    if (resPassword !== password) {
+        throw Error(401);
+    }
+};
+
+export const signin = async (nickname, password) => {
+    try {
+        const affectedRows = await insertUser(nickname, password);
+        if (affectedRows !== 1) {
+            throw Error(500);
+        }
+    } catch ({message}) {
+        if(message === '1062'){
+            throw Error(402);
+        }
+    }
+};
