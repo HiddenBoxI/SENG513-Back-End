@@ -1,3 +1,8 @@
+DROP DATABASE IF EXISTS CheckerBar;
+create DATABASE CheckerBar CHARSET UTF8;
+
+use CheckerBar;
+
 DROP TABLE IF EXISTS t_user;
 CREATE TABLE t_user
 (
