@@ -7,7 +7,7 @@ import mysql from 'mysql2';
 export const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '123',
+    password: '12345678',
     database: 'CheckerBar',
     waitForConnections: true,
     connectionLimit: 10,
@@ -23,10 +23,11 @@ export const connection = mysql.createConnection({
 // });
 // const now = new Date().format('yyyy-MM-dd hh-mm-ss');
 // connection.query(
-//     'insert into t_user SET ?',
-//     { nickname: 'lalala1', password: '6666667', create_at: now, update_at: now },
+//     'select * from t_user',
 //     function (err, results, fields) {
-//         console.log(results); // results contains rows returned by server
+//         console.log(results);
+//         console.log(err);
+//         // results contains rows returned by server
 //         // console.log(fields); // fields contains extra meta data about results, if available
 //     }
 // );

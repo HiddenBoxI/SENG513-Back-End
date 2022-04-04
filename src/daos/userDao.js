@@ -1,4 +1,4 @@
-import { connection } from '#src/utils/mysql2connection.js';
+import {connection} from '#src/utils/mysql2connection.js';
 import dateformat from '#src/utils/dateformat.js';
 
 Date.prototype.format = dateformat;
@@ -12,11 +12,12 @@ Date.prototype.format = dateformat;
 const tableName = 't_user';
 
 export const getUserByNickname = async nickname => {
-    console.log('nickname',nickname);
+    console.log('nickname', nickname);
+
     const [rows] = await connection
         .promise()
         .execute(`select * from ${tableName} where nickname = ?`, [nickname]);
-    console.log('rows',rows);
+
     return rows;
 };
 
@@ -39,8 +40,8 @@ export const insertUser = async (nickname, password) => {
                 [nickname, password, now, now]
             );
         return res[0].affectedRows;
-    } catch ({code,errno}) {
-        console.log(code,errno);
+    } catch ({code, errno}) {
+        console.log(code, errno);
         throw Error(errno);
     }
 };

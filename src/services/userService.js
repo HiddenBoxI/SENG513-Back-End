@@ -7,6 +7,7 @@ export const login = async (nickname, password) => {
     if (resArr.length === 0) {
         throw Error(400);
     }
+
     if (resArr[0].password !== password) {
         throw Error(401);
     }
@@ -24,3 +25,5 @@ export const signin = async (nickname, password) => {
         }
     }
 };
+
+

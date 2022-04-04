@@ -12,6 +12,7 @@ router.post('/loginApi', async (ctx) => {
         ctx.body = {
             code: 200,
             message: 'Logged in',
+
         };
     } catch ({ message }) {
         if (message === '400') {
@@ -51,7 +52,5 @@ router.post('/signInApi',async (ctx) => {
         }
     }
 })
-
-
 
 export default router;
