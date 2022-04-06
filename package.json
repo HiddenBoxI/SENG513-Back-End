@@ -15,7 +15,7 @@
     },
     "type": "module",
     "scripts": {
-        "dev": "nodemon ./src/controllers/index.js"
+        "dev": "node ./src/controllers/index.js"
     },
     "imports": {
         "#src/*": "./src/*"

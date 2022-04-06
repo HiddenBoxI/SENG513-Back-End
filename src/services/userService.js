@@ -4,6 +4,7 @@ export const login = async (nickname, password) => {
     // const [rows] = userResult();
     // return rows;
     const resArr = await getUserByNickname(nickname);
+    console.log(resArr);
     if (resArr.length === 0) {
         throw Error(400);
     }
@@ -11,6 +12,7 @@ export const login = async (nickname, password) => {
     if (resArr[0].password !== password) {
         throw Error(401);
     }
+    return resArr[0]; 
 };
 
 export const signin = async (nickname, password) => {

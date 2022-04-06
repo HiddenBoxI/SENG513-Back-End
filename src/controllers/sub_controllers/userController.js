@@ -1,18 +1,19 @@
 import Router from '@koa/router';
-import { login,signin } from '#src/services/userService.js';
+import { login, signin } from '#src/services/userService.js';
 
 const router = new Router();
 
-router.post('/loginApi', async (ctx) => {
+router.post('/loginApi', async ctx => {
     const { nickname, password } = ctx.request.body;
 
     try {
-        await login(nickname, password);
-        // console.log('res', res);
+        const { id } = await login(nickname, password);
         ctx.body = {
             code: 200,
             message: 'Logged in',
-
+            data:{
+                id
+            }
         };
     } catch ({ message }) {
         if (message === '400') {
@@ -20,20 +21,21 @@ router.post('/loginApi', async (ctx) => {
             ctx.body = {
                 code: 400,
                 message: 'cannot find the user',
-            }
-            
-        }
-        if (message === '401') {
+            };
+        }else if (message === '401') {
             // ctx.status = 400;
             ctx.body = {
                 code: 401,
                 message: 'password incorrect',
-            }
+            };
+        }else{
+            console.error(message);
+            ctx.throw(500)
         }
     }
 });
 
-router.post('/signInApi',async (ctx) => {
+router.post('/signInApi', async ctx => {
     const { nickname, password } = ctx.request.body;
 
     try {
@@ -48,9 +50,12 @@ router.post('/signInApi',async (ctx) => {
             ctx.body = {
                 code: 402,
                 message: 'User already exists',
-            }
+            };
+        }else{
+            console.error(message);
+            ctx.throw(500)
         }
     }
-})
+});
 
 export default router;
