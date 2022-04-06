@@ -11,7 +11,7 @@ router.get('/statusInfo', async ctx => {
         ctx.body = {
             code: 200,
             message: 'get status successful!',
-            data,
+            data:data[0],
         };
     } catch ({message}) {
         // console.log(err);
@@ -20,8 +20,13 @@ router.get('/statusInfo', async ctx => {
                 code: 403,
                 message: 'Status not found',
             };
+        }else if(message === '405'){
+            ctx.body = {
+                code: 405,
+                message: 'Id should not be empty',
+            };
         }else{
-            console.error(err);
+            console.error(message);
             ctx.throw(500);
         }
     }
@@ -36,13 +41,18 @@ router.post('/updateStatusInfo', async ctx => {
             message: 'Update statistic info successful!',
         };
     } catch ({message}) {
-        if (message === '405') {
+        if (message === '406') {
             ctx.body = {
-                code: 405,
+                code: 406,
                 message: 'Update status info Failed!',
             };
+        }else if(message === '405'){
+            ctx.body = {
+                code: 405,
+                message: 'Id should not be empty',
+            };
         }else{
-            console.error(err);
+            console.error(message);
             ctx.throw(500);
         }
     }
