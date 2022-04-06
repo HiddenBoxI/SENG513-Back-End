@@ -12,12 +12,12 @@ CREATE TABLE t_user
     `create_at` DATETIME           NULL,
     `update_at` DATETIME           NULL,
     PRIMARY KEY (`id`),
-    totalWins     int          not null,
-    GamesPlayed   int          not null,
-    WinRate       float        not null,
-    CurrentStreak int          not null,
-    HighestStreak int          not null,
-    LastPlayed    DATETIME   not null,
+    totalWins     int          ,
+    GamesPlayed   int          ,
+    WinRate       float        ,
+    CurrentStreak int          ,
+    HighestStreak int          ,
+    LastPlayed    DATETIME   ,
     UNIQUE KEY `nickname` (`nickname`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
