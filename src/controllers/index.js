@@ -12,12 +12,14 @@ import format from '../utils/dateformat.js';
 import loginController from './sub_controllers/userController.js';
 import statusController from './sub_controllers/statusController.js'
 import router from "./sub_controllers/userController.js";
+import cors from 'koa2-cors';
 
 Date.prototype.format = format;
 console.log(new Date().format('hh:mm:ss'));
 
 const app = new Koa();
 app.use(bodyParser());
+app.use(cors());
 const httpServer = createServer(app.callback());
 
 // CORS
