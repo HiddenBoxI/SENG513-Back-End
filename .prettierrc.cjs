@@ -10,7 +10,7 @@ module.exports = {
     // 5.使用单引号(singleQuote: <bool>)
     singleQuote: true,
     // 6.object对象中key值是否加引号（quoteProps: "<as-needed|consistent|preserve>"）as-needed只有在需求要的情况下加引号，consistent是有一个需要引号就统一加，preserve是保留用户输入的引号
-    quoteProps: "as-needed",
+quoteProps: "as-needed",
     // 7.在jsx文件中的引号需要单独设置（jsxSingleQuote: <bool>）
     jsxSingleQuote: true,
     // 8.尾部逗号设置，es5是尾部逗号兼容es5，none就是没有尾部逗号，all是指所有可能的情况，需要node8和es2017以上的环境。（trailingComma: "<es5|none|all>"）
