@@ -1,5 +1,5 @@
 import Router from '@koa/router';
-import { login, signin } from '#src/services/userService.js';
+import { login, signin, updateInfo } from '#src/services/userService.js';
 
 const router = new Router();
 
@@ -11,9 +11,9 @@ router.post('/loginApi', async ctx => {
         ctx.body = {
             code: 200,
             message: 'Logged in',
-            data:{
-                id
-            }
+            data: {
+                id,
+            },
         };
     } catch ({ message }) {
         if (message === '400') {
@@ -22,15 +22,15 @@ router.post('/loginApi', async ctx => {
                 code: 400,
                 message: 'cannot find the user',
             };
-        }else if (message === '401') {
+        } else if (message === '401') {
             // ctx.status = 400;
             ctx.body = {
                 code: 401,
                 message: 'password incorrect',
             };
-        }else{
+        } else {
             console.error(message);
-            ctx.throw(500)
+            ctx.throw(500);
         }
     }
 });
@@ -51,9 +51,43 @@ router.post('/signInApi', async ctx => {
                 code: 402,
                 message: 'User already exists',
             };
-        }else{
+        } else {
             console.error(message);
-            ctx.throw(500)
+            ctx.throw(500);
+        }
+    }
+});
+
+router.post('/modifyUserInfoApi', async ctx => {
+    const { id, nickname, password } = ctx.request.body;
+
+    try {
+        const modifiedInfo = await updateInfo(id, nickname, password);
+        ctx.body = {
+            code: 200,
+            message: 'Update successful!',
+            data: modifiedInfo,
+        };
+    } catch ({ message }) {
+        if (message === '407') {
+            // ctx.status = 400;
+            ctx.body = {
+                code: 407,
+                message: 'User is not exist',
+            };
+        } else if (message === '408') {
+            ctx.body = {
+                code: 408,
+                message: 'Duplicate username!!',
+            };
+        } else if (message === '409') {
+            ctx.body = {
+                code: 409,
+                message: 'Field should not be empty!!',
+            };
+        } else {
+            console.error(message);
+            ctx.throw(500);
         }
     }
 });
