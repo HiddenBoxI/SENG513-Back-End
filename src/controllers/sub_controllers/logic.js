@@ -20,7 +20,7 @@ export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,b
             console.log(query);
             competeUserInfo.blue = {
                 ID: IDToUserInfo.get(query[0]).sockID,
-                name: IDToUserInfo.get(query[0]).myName,
+                name: IDToUserInfo.get(query[0]).myname,
             };
 
 
@@ -56,7 +56,7 @@ export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,b
             console.log(query);
             competeUserInfo.red = {
                 ID: IDToUserInfo.get(query[0]).sockID,
-                name: IDToUserInfo.get(query[0]).myName,
+                name: IDToUserInfo.get(query[0]).myname,
             };
 
             // 队列为满

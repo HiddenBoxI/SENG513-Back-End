@@ -130,7 +130,7 @@ export const createWebsocket = httpServer => {
                     if (!competeUserInfo.red) {
                         competeUserInfo.red = {
                             ID: query[0],
-                            name: IDToUserInfo.get(query[0]).myName,
+                            name: IDToUserInfo.get(query[0]).myname,
                         };
 
                         query.shift();
@@ -140,7 +140,7 @@ export const createWebsocket = httpServer => {
                     if (!competeUserInfo.blue) {
                         competeUserInfo.blue = {
                             ID: query[0],
-                            name: IDToUserInfo.get(query[0]).myName,
+                            name: IDToUserInfo.get(query[0]).myname,
                         };
 
                         query.shift();
@@ -211,7 +211,7 @@ export const createWebsocket = httpServer => {
                     console.log(query);
                     competeUserInfo.blue = {
                         ID: IDToUserInfo.get(query[0]).sockID,
-                        name: IDToUserInfo.get(query[0]).myName,
+                        name: IDToUserInfo.get(query[0]).myname,
                     };
 
                     // 队列为满
@@ -241,7 +241,7 @@ export const createWebsocket = httpServer => {
                     console.log(query);
                     competeUserInfo.red = {
                         ID: IDToUserInfo.get(query[0]).sockID,
-                        name: IDToUserInfo.get(query[0]).myName,
+                        name: IDToUserInfo.get(query[0]).myname,
                     };
 
                     // 队列为满
