@@ -1,4 +1,6 @@
-export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io) => {
+export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,broadcastQuery) => {
+
+
     // 复原Compete对象
     competeUserInfo.gameStart = false;
     competeUserInfo.redReady = false;
@@ -37,10 +39,12 @@ export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io) 
 
             // 重新插入队列,恢复开始时的状态
             query.unshift(competeUserInfo.red.ID);
+            
             competeUserInfo.red = null;
         }
 
         query.shift();
+        
 
     } else {
         // io.to(competeUserInfo.red.ID).emit('loseAndLeave');
