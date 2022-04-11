@@ -1,6 +1,4 @@
 export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,broadcastQuery) => {
-
-
     // 复原Compete对象
     competeUserInfo.gameStart = false;
     competeUserInfo.redReady = false;
@@ -20,7 +18,7 @@ export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,b
             console.log(query);
             competeUserInfo.blue = {
                 ID: IDToUserInfo.get(query[0]).sockID,
-                name: IDToUserInfo.get(query[0]).myName,
+                name: IDToUserInfo.get(query[0]).myname,
             };
 
 
@@ -56,7 +54,7 @@ export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,b
             console.log(query);
             competeUserInfo.red = {
                 ID: IDToUserInfo.get(query[0]).sockID,
-                name: IDToUserInfo.get(query[0]).myName,
+                name: IDToUserInfo.get(query[0]).myname,
             };
 
             // 队列为满

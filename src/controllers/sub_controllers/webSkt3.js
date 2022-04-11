@@ -34,7 +34,7 @@ export const createWebsocket = httpServer => {
     };
 
     const broadcastQuery = () => {
-        console.log("\nxixixixix");
+        console.log('\nxixixixix');
         console.log(query);
         if (query.length === 0) {
             io.emit('queryInfo', []);
@@ -48,7 +48,7 @@ export const createWebsocket = httpServer => {
                 newQuery.push(eachUserInfo);
             });
 
-            console.log("newQuery",newQuery);
+            console.log('newQuery', newQuery);
 
             io.emit('queryInfo', newQuery);
         }
@@ -60,7 +60,7 @@ export const createWebsocket = httpServer => {
 
         socket.on('disconnect', () => {
             console.log(`user ${socket.id} disconnected`);
-            
+
             // 删map和Query中用户数据
             IDToUserInfo.delete(socket.id);
             for (let i = 0; i < query.length; i++) {
@@ -130,7 +130,7 @@ export const createWebsocket = httpServer => {
                     if (!competeUserInfo.red) {
                         competeUserInfo.red = {
                             ID: query[0],
-                            name: IDToUserInfo.get(query[0]).myName,
+                            name: IDToUserInfo.get(query[0]).myname,
                         };
 
                         query.shift();
@@ -140,7 +140,7 @@ export const createWebsocket = httpServer => {
                     if (!competeUserInfo.blue) {
                         competeUserInfo.blue = {
                             ID: query[0],
-                            name: IDToUserInfo.get(query[0]).myName,
+                            name: IDToUserInfo.get(query[0]).myname,
                         };
 
                         query.shift();
@@ -211,7 +211,7 @@ export const createWebsocket = httpServer => {
                     console.log(query);
                     competeUserInfo.blue = {
                         ID: IDToUserInfo.get(query[0]).sockID,
-                        name: IDToUserInfo.get(query[0]).myName,
+                        name: IDToUserInfo.get(query[0]).myname,
                     };
 
                     // 队列为满
@@ -241,7 +241,7 @@ export const createWebsocket = httpServer => {
                     console.log(query);
                     competeUserInfo.red = {
                         ID: IDToUserInfo.get(query[0]).sockID,
-                        name: IDToUserInfo.get(query[0]).myName,
+                        name: IDToUserInfo.get(query[0]).myname,
                     };
 
                     // 队列为满
@@ -286,6 +286,10 @@ export const createWebsocket = httpServer => {
             }
         });
 
-        socket.on('getMoveHistory', () => {});
+        // socket.on('getMoveHistory', data => {
+        //     competeUserInfo.red.ID === socket.id
+        //         ? io.to(competeUserInfo.red.ID).emit('moveHistory', data)
+        //         : io.to(competeUserInfo.blue.ID).emit('moveHistory', data);
+        // });
     });
 };
