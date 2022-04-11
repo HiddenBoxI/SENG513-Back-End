@@ -1,4 +1,4 @@
-import {connection} from '#src/utils/mysql2connection.js';
+import { connection } from '#src/utils/mysql2connection.js';
 import dateformat from '#src/utils/dateformat.js';
 
 Date.prototype.format = dateformat;
@@ -41,7 +41,30 @@ export const insertUser = async (nickname, password) => {
                 [nickname, password, now, now]
             );
         return res[0].affectedRows;
-    } catch ({code, errno}) {
+    } catch ({ code, errno }) {
+        console.log(code, errno);
+        throw Error(errno);
+    }
+};
+
+export const updateUser = async (id, nickname, password) => {
+    try {
+        const res = await connection
+            .promise()
+            .execute(
+                `update ${tableName} set nickname=?, password=?,update_at=? where id=?`,
+                [nickname, password, now, id]
+            );
+        if (res[0].affectedRows === 1) {
+            const [rows] = await connection
+                .promise()
+                .execute(`select id,nickname,password from ${tableName} where id = ?`, [id]);
+
+            return rows;
+        } else {
+            throw Error(500);
+        }
+    } catch ({ code, errno }) {
         console.log(code, errno);
         throw Error(errno);
     }

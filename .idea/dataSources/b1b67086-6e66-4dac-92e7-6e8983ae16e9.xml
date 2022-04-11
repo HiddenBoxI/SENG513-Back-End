@@ -1009,32 +1009,26 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     </column>
     <column id="289" parent="283" name="totalWins">
       <DataType>int|0s</DataType>
-      <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
     <column id="290" parent="283" name="GamesPlayed">
       <DataType>int|0s</DataType>
-      <NotNull>1</NotNull>
       <Position>7</Position>
     </column>
     <column id="291" parent="283" name="WinRate">
       <DataType>float|0s</DataType>
-      <NotNull>1</NotNull>
       <Position>8</Position>
     </column>
     <column id="292" parent="283" name="CurrentStreak">
       <DataType>int|0s</DataType>
-      <NotNull>1</NotNull>
       <Position>9</Position>
     </column>
     <column id="293" parent="283" name="HighestStreak">
       <DataType>int|0s</DataType>
-      <NotNull>1</NotNull>
       <Position>10</Position>
     </column>
     <column id="294" parent="283" name="LastPlayed">
       <DataType>datetime|0s</DataType>
-      <NotNull>1</NotNull>
       <Position>11</Position>
     </column>
     <index id="295" parent="283" name="nickname">
