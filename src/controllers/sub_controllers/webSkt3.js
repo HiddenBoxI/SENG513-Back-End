@@ -34,8 +34,8 @@ export const createWebsocket = httpServer => {
     };
 
     const broadcastQuery = () => {
-        console.log('\nxixixixix');
-        console.log(query);
+        // console.log('\nxixixixix');
+        // console.log(query);
         if (query.length === 0) {
             io.emit('queryInfo', []);
         } else {
@@ -216,6 +216,7 @@ export const createWebsocket = httpServer => {
 
                     // 队列为满
                     competeUserInfo.full = true;
+                    query.shift();
 
                     // 新的对局开始：准备过程
                     io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
@@ -228,7 +229,6 @@ export const createWebsocket = httpServer => {
 
                     // 重新插入队列,恢复开始时的状态
                     query.unshift(competeUserInfo.red.ID);
-                    broadcastQuery();
 
                     competeUserInfo.red = null;
                 }
@@ -246,6 +246,7 @@ export const createWebsocket = httpServer => {
 
                     // 队列为满
                     competeUserInfo.full = true;
+                    query.shift();
 
                     // 新的对局开始：准备过程
                     io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
@@ -258,11 +259,12 @@ export const createWebsocket = httpServer => {
 
                     // 重新插入队列,恢复开始时的状态
                     query.unshift(competeUserInfo.blue.ID);
-                    broadcastQuery();
+                    
 
                     competeUserInfo.blue = null;
                 }
             }
+            broadcastQuery();
         });
 
         socket.on('boardmessage', data => {
