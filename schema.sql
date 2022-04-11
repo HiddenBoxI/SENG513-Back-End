@@ -24,4 +24,6 @@ CREATE TABLE t_user
   COLLATE = utf8mb4_general_ci COMMENT ='User';
 
 insert into t_user (nickname, password, create_at, update_at, totalwins, gamesplayed, winrate, currentstreak, higheststreak, lastplayed)
-values ("lalala","1234",now(),now(),1,1,12.5,1,1,now());
+values ("lalala","1234",now(),now(),1,2,12.5,3,3,now());
+insert into t_user (nickname, password, create_at, update_at, totalwins, gamesplayed, winrate, currentstreak, higheststreak, lastplayed)
+values ("abc","1234",now(),now(),3,9,10.5,2,1,now());
