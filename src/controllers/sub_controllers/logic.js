@@ -24,6 +24,8 @@ export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,b
 
             // 队列为满
             competeUserInfo.full = true;
+            query.shift();
+
 
             // 新的对局开始：准备过程
             io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
@@ -41,9 +43,6 @@ export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,b
             competeUserInfo.red = null;
         }
 
-        query.shift();
-        
-
     } else {
         // io.to(competeUserInfo.red.ID).emit('loseAndLeave');
         competeUserInfo.red = null;
@@ -59,6 +58,7 @@ export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,b
 
             // 队列为满
             competeUserInfo.full = true;
+            query.shift();
 
             // 新的对局开始：准备过程
             io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
@@ -71,9 +71,10 @@ export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,b
             io.to(competeUserInfo.blue.ID).emit('waitforjoin',competeUserInfo);
 
             // 重新插入队列,恢复开始时的状态
+            query.unshift(competeUserInfo.blue.ID);
+            
             competeUserInfo.blue = null;
         }
-        query.shift();
 
     }
 }
