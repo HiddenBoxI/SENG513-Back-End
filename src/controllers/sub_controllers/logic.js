@@ -1,6 +1,4 @@
 export const whenSomeoneforceExit = (competeUserInfo,sid,IDToUserInfo,query,io,broadcastQuery) => {
-
-
     // 复原Compete对象
     competeUserInfo.gameStart = false;
     competeUserInfo.redReady = false;
