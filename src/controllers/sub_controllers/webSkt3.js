@@ -44,7 +44,7 @@ export const createWebsocket = httpServer => {
                 // console.log('item',item);
                 // console.log('index',index);
                 const eachUserInfo = lodash.cloneDeep(IDToUserInfo.get(item));
-                delete eachUserInfo.sockID;
+                delete eachUserInfo['sockID'];
                 newQuery.push(eachUserInfo);
             });
 
