@@ -33,8 +33,25 @@ export const createWebsocket = httpServer => {
         chessBoard: [],
     };
 
-    const returnQueryInfo = () => {
-        io.emit('queryInfo', query);
+    const broadcastQuery = () => {
+        console.log("\nxixixixix");
+        console.log(query);
+        if (query.length === 0) {
+            io.emit('queryInfo', []);
+        } else {
+            const newQuery = [];
+            query.forEach((item, index) => {
+                // console.log('item',item);
+                // console.log('index',index);
+                const eachUserInfo = lodash.cloneDeep(IDToUserInfo.get(item));
+                delete eachUserInfo.sockID;
+                newQuery.push(eachUserInfo);
+            });
+
+            console.log("newQuery",newQuery);
+
+            io.emit('queryInfo', newQuery);
+        }
     };
 
     io.on('connection', socket => {
@@ -43,17 +60,7 @@ export const createWebsocket = httpServer => {
 
         socket.on('disconnect', () => {
             console.log(`user ${socket.id} disconnected`);
-
-            // 删map中用户数据
-            // for (const [index,item] of query.entries()) {
-            //     if(item.myname === IDToUserInfo.get(socket.id).myname){
-            //         query.splice(index,1);
-            //         nameToID.delete(item.myname);
-            //     }
-            // }
-            // 所有用户得到当前的用户信息
-            // returnQueryInfo();
-
+            
             // 删map和Query中用户数据
             IDToUserInfo.delete(socket.id);
             for (let i = 0; i < query.length; i++) {
@@ -64,8 +71,17 @@ export const createWebsocket = httpServer => {
             // 如果red和blue其中一方掉线，才能进入其中一方的等待或下一场开始
             // 如果两方都断，则不做处理
             if (competeUserInfo.red || competeUserInfo.blue) {
-                whenSomeoneforceExit(competeUserInfo, socket.id, IDToUserInfo, query, io);
+                whenSomeoneforceExit(
+                    competeUserInfo,
+                    socket.id,
+                    IDToUserInfo,
+                    query,
+                    io,
+                    broadcastQuery
+                );
             }
+
+            broadcastQuery();
         });
 
         socket.on('addUser', userInfo => {
@@ -98,6 +114,7 @@ export const createWebsocket = httpServer => {
             // }
 
             query.push(socket.id);
+
             if (query.length === 1) {
                 // 等待一名玩家加入
                 // 由于游戏结束后剩余那一名玩家会被移回到队列，所以addUser时间触发之后，
@@ -115,19 +132,20 @@ export const createWebsocket = httpServer => {
                             ID: query[0],
                             name: IDToUserInfo.get(query[0]).myName,
                         };
+
                         query.shift();
                         console.log('redAdd');
                     }
-                    // 蓝方空则填入红方位置
+                    // 蓝方空则填入蓝方位置
                     if (!competeUserInfo.blue) {
                         competeUserInfo.blue = {
                             ID: query[0],
                             name: IDToUserInfo.get(query[0]).myName,
                         };
+
                         query.shift();
                         console.log('blueAdd');
                     }
-
                     // competeUserInfo已填满,可以开始准备
                     competeUserInfo.full = true;
                     io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
@@ -140,6 +158,7 @@ export const createWebsocket = httpServer => {
                     socket.emit('inQueryOrGoToSpectate');
                 }
             }
+            broadcastQuery();
         });
 
         socket.on('i-am-ready', readyFlag => {
@@ -209,6 +228,8 @@ export const createWebsocket = httpServer => {
 
                     // 重新插入队列,恢复开始时的状态
                     query.unshift(competeUserInfo.red.ID);
+                    broadcastQuery();
+
                     competeUserInfo.red = null;
                 }
             } else {
@@ -237,6 +258,8 @@ export const createWebsocket = httpServer => {
 
                     // 重新插入队列,恢复开始时的状态
                     query.unshift(competeUserInfo.blue.ID);
+                    broadcastQuery();
+
                     competeUserInfo.blue = null;
                 }
             }
@@ -247,21 +270,22 @@ export const createWebsocket = httpServer => {
             socket.broadcast.emit('data', data.toString());
         });
 
-
         socket.on('getAvatarInfo', () => {
-            if(query.length !== 0){
-                socket.emit('queryInfo',[])
-            }else{
+            if (query.length !== 0) {
+                socket.emit('queryInfo', []);
+            } else {
                 const newQuery = [];
-                
-                query.map((item,index) => {
+
+                query.map((item, index) => {
                     const eachUserInfo = lodash.cloneDeep(IDToUserInfo.get(item));
                     delete eachUserInfo.sockID;
                     newQuery.push(eachUserInfo);
-                })
-                
+                });
+
                 socket.emit('queryInfo', newQuery);
             }
         });
+
+        socket.on('getMoveHistory', () => {});
     });
 };
