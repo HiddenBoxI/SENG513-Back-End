@@ -259,8 +259,6 @@ export const createWebsocket = httpServer => {
 
                     // 重新插入队列,恢复开始时的状态
                     query.unshift(competeUserInfo.blue.ID);
-                    
-
                     competeUserInfo.blue = null;
                 }
             }
@@ -269,7 +267,7 @@ export const createWebsocket = httpServer => {
 
         socket.on('boardmessage', data => {
             console.log(data);
-            socket.broadcast.emit('data', data.toString());
+            io.emit('message-data', data);
         });
 
         socket.on('getAvatarInfo', () => {
