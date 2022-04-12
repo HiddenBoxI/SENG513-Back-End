@@ -35,7 +35,7 @@ export const createWebsocket = httpServer => {
         // 蓝方信息
         blue: null,
         // 备份棋盘
-        chessBoard: [],
+        // chessBoard: [],
     };
 
     const broadcastQuery = () => {
@@ -202,6 +202,8 @@ export const createWebsocket = httpServer => {
             competeUserInfo.red.ID === socket.id
                 ? io.to(competeUserInfo.blue.ID).emit('moveChessInfo', MEInfo)
                 : io.to(competeUserInfo.red.ID).emit('moveChessInfo', MEInfo);
+
+
 
             io.except([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
                 'spectateChessMove',
