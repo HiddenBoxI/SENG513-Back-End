@@ -7,8 +7,8 @@ Date.prototype.format = dateformat;
 export const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    // password: '12345678',
-    password: '123',
+    password: '12345678',
+    //password: '123',
     database: 'CheckerBar',
     waitForConnections: true,
     connectionLimit: 10,
