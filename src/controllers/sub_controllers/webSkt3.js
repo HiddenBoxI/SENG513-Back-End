@@ -184,12 +184,12 @@ export const createWebsocket = httpServer => {
             competeUserInfo.red.ID === socket.id
                 ? io.to(competeUserInfo.blue.ID).emit('moveChessInfo', MEInfo)
                 : io.to(competeUserInfo.red.ID).emit('moveChessInfo', MEInfo);
+            
+            io.except([competeUserInfo.red.ID,competeUserInfo.blue.ID]).emit('spectateChessMove',{MEInfo,competeUserInfo});
         });
 
-        socket.on('turnSwitch', ({ Turn }) => {
-            Turn === 'red'
-                ? io.to(competeUserInfo.blue.ID).emit('oriTurn', { Turn: 'blue' })
-                : io.to(competeUserInfo.blue.ID).emit('oriTurn', { Turn: 'red' });
+        socket.on('turnSwitch', Turn => {
+            io.emit('oriTurn',Turn);
         });
 
         socket.on('winner', () => {
@@ -263,6 +263,7 @@ export const createWebsocket = httpServer => {
                 }
             }
             broadcastQuery();
+            io.emit('spectateSomeoneWin',competeUserInfo);
         });
 
         socket.on('boardmessage', data => {
@@ -286,10 +287,8 @@ export const createWebsocket = httpServer => {
             }
         });
 
-        // socket.on('getMoveHistory', data => {
-        //     competeUserInfo.red.ID === socket.id
-        //         ? io.to(competeUserInfo.red.ID).emit('moveHistory', data)
-        //         : io.to(competeUserInfo.blue.ID).emit('moveHistory', data);
-        // });
+        socket.on('getChessboardStatus',() => {
+            socket.emit('cbStatus',competeUserInfo);
+        })
     });
 };
