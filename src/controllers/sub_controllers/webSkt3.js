@@ -35,7 +35,7 @@ export const createWebsocket = httpServer => {
         // 蓝方信息
         blue: null,
         // 备份棋盘
-        // chessBoard: [],
+        chessBoard: [],
     };
 
     const broadcastQuery = () => {
@@ -176,24 +176,26 @@ export const createWebsocket = httpServer => {
         });
 
         socket.on('i-am-ready', () => {
-            competeUserInfo.red.ID === socket.id && (competeUserInfo.redReady = true);
-            competeUserInfo.blue.ID === socket.id && (competeUserInfo.blueReady = true);
-
-            if (competeUserInfo.redReady && competeUserInfo.blueReady) {
-                competeUserInfo.gameStart = true;
+            if(competeUserInfo.full){
+                competeUserInfo.red.ID === socket.id && (competeUserInfo.redReady = true);
+                competeUserInfo.blue.ID === socket.id && (competeUserInfo.blueReady = true);
+    
+                if (competeUserInfo.redReady && competeUserInfo.blueReady) {
+                    competeUserInfo.gameStart = true;
+                    io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
+                        'getStart',
+                        {
+                            Turn: 'red',
+                        }
+                    );
+                    console.log(competeUserInfo);
+                }
+    
                 io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
-                    'getStart',
-                    {
-                        Turn: 'red',
-                    }
+                    'cbStatus',
+                    competeUserInfo
                 );
-                console.log(competeUserInfo);
             }
-
-            io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
-                'cbStatus',
-                competeUserInfo
-            );
         });
 
         socket.on('chessMESend', MEInfo => {
@@ -212,7 +214,7 @@ export const createWebsocket = httpServer => {
         });
 
         socket.on('turnSwitch', Turn => {
-            io.emit('oriTurn', Turn);
+            io.emit('turn', Turn);
         });
 
         socket.on('winner', () => {
