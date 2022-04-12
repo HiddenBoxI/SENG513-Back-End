@@ -198,16 +198,16 @@ export const createWebsocket = httpServer => {
             }
         });
 
-        socket.on('chessMESend', MEInfo => {
+        socket.on('chessMESend', ({MEInfo,chessBoard}) => {
             // 原坐标，现坐标，吃掉子的坐标
             // competeUserInfo.chessBoard = MEInfo.chessBoard;
             competeUserInfo.red.ID === socket.id
                 ? io.to(competeUserInfo.blue.ID).emit('moveChessInfo', MEInfo)
                 : io.to(competeUserInfo.red.ID).emit('moveChessInfo', MEInfo);
 
+            competeUserInfo.chessBoard = chessBoard;
 
-
-            io.except([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
+            io.emit(
                 'spectateChessMove',
                 { MEInfo, competeUserInfo }
             );
@@ -297,15 +297,17 @@ export const createWebsocket = httpServer => {
         });
 
         socket.on('getAvatarInfo', () => {
-            if (query.length !== 0) {
+            if (query.length === 0) {
                 socket.emit('queryInfo', JSON.stringify([]));
             } else {
                 const newQuery = [];
 
                 query.map((item, index) => {
                     const eachUserInfo = lodash.cloneDeep(IDToUserInfo.get(item));
-                    delete eachUserInfo.sockID;
-                    newQuery.push(eachUserInfo);
+                    if (!!eachUserInfo) {
+                        delete eachUserInfo['sockID'];
+                        newQuery.push(eachUserInfo);
+                    }
                 });
 
                 socket.emit('queryInfo', JSON.stringify(newQuery));
