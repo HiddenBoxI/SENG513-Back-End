@@ -42,7 +42,7 @@ export const createWebsocket = httpServer => {
         // console.log('\nxixixixix');
         // console.log(query);
         if (query.length === 0) {
-            io.emit('queryInfo', []);
+            io.emit('queryInfo', JSON.stringify([]));
         } else {
             const newQuery = [];
             query.forEach((item, index) => {
@@ -57,7 +57,7 @@ export const createWebsocket = httpServer => {
 
             console.log('newQuery', newQuery);
 
-            io.emit('queryInfo', newQuery);
+            io.emit('queryInfo', JSON.stringify(newQuery));
         }
     };
 
@@ -70,10 +70,15 @@ export const createWebsocket = httpServer => {
 
             // 删map和Query中用户数据
             IDToUserInfo.delete(socket.id);
+
+            console.log("recentq\n",query);
             for (let i = 0; i < query.length; i++) {
                 query[i] === socket.id && query.splice(i, 1);
                 break;
             }
+            console.log("nowq\n",query);
+
+            console.log(IDToUserInfo);
 
             // 如果red和blue其中一方掉线，才能进入其中一方的等待或下一场开始
             // 如果两方都断，则不做处理
@@ -159,7 +164,7 @@ export const createWebsocket = httpServer => {
                         competeUserInfo
                     );
 
-                    console.log('blueAdd', competeUserInfo);
+                    console.log(competeUserInfo);
                 } else {
                     socket.emit('inQueryOrGoToSpectate');
                 }
@@ -181,6 +186,7 @@ export const createWebsocket = httpServer => {
                         Turn: 'red',
                     }
                 );
+                io.emit('queryInfo',competeUserInfo);
                 console.log(competeUserInfo);
             }
         });
@@ -283,7 +289,7 @@ export const createWebsocket = httpServer => {
 
         socket.on('getAvatarInfo', () => {
             if (query.length !== 0) {
-                socket.emit('queryInfo', []);
+                socket.emit('queryInfo', JSON.stringify([]));
             } else {
                 const newQuery = [];
 
@@ -293,12 +299,13 @@ export const createWebsocket = httpServer => {
                     newQuery.push(eachUserInfo);
                 });
 
-                socket.emit('queryInfo', newQuery);
+                socket.emit('queryInfo', JSON.stringify(newQuery));
             }
         });
 
         socket.on('getChessboardStatus', () => {
             socket.emit('cbStatus', competeUserInfo);
         });
+
     });
 };

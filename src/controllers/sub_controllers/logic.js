@@ -7,6 +7,9 @@ export const whenSomeoneforceExit = (
     broadcastQuery
 ) => {
     // 复原Compete对象
+    if(!!!competeUserInfo.blue && !!!competeUserInfo.red){
+        return;
+    }
 
     // 蓝旗强退
     if (!!competeUserInfo.blue && competeUserInfo.blue.ID === sid) {
@@ -21,7 +24,6 @@ export const whenSomeoneforceExit = (
 
         if (query.length !== 0) {
             // 如果队列长度不为零 说明有人排队，那么提拔队列尾部的用户到空闲的棋子端，并准备
-            console.log(query);
             competeUserInfo.blue = {
                 ID: IDToUserInfo.get(query[0]).sockID,
                 name: IDToUserInfo.get(query[0]).myname,
@@ -45,6 +47,10 @@ export const whenSomeoneforceExit = (
 
             competeUserInfo.red = null;
         }
+        console.log(query);
+        console.log(competeUserInfo);
+
+        return;
     }
 
     if(!!competeUserInfo.red && competeUserInfo.red.ID === sid) {
@@ -59,7 +65,6 @@ export const whenSomeoneforceExit = (
 
         if (query.length !== 0) {
             // 如果队列长度不为零 说明有人排队，那么提拔队列尾部的用户到空闲的棋子端，并准备
-            console.log(query);
             competeUserInfo.red = {
                 ID: IDToUserInfo.get(query[0]).sockID,
                 name: IDToUserInfo.get(query[0]).myname,
@@ -83,5 +88,9 @@ export const whenSomeoneforceExit = (
 
             competeUserInfo.blue = null;
         }
+        console.log(query);
+        console.log(competeUserInfo);
+
+        return;
     }
 };
