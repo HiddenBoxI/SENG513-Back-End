@@ -13,6 +13,11 @@ export const createWebsocket = httpServer => {
     // const nameToID = new Map();
     const query = [];
 
+    /**
+     * 如果full===false或redReady === false 或 blueReady === false：正在等待开始
+     * 三个都是true且gameStart为true的时候，才视为开始，
+     * 且 可以从red和blue对象里拿到对方的socketID和name，以及备份棋盘
+     */
     let competeUserInfo = {
         // 是否凑够两人
         full: false,
@@ -44,8 +49,10 @@ export const createWebsocket = httpServer => {
                 // console.log('item',item);
                 // console.log('index',index);
                 const eachUserInfo = lodash.cloneDeep(IDToUserInfo.get(item));
-                !!eachUserInfo['sockID'] && delete eachUserInfo['sockID'];
-                newQuery.push(eachUserInfo);
+                if(!!eachUserInfo){
+                    delete eachUserInfo['sockID'];
+                    newQuery.push(eachUserInfo);
+                }
             });
 
             console.log('newQuery', newQuery);
@@ -70,22 +77,21 @@ export const createWebsocket = httpServer => {
 
             // 如果red和blue其中一方掉线，才能进入其中一方的等待或下一场开始
             // 如果两方都断，则不做处理
-            if (competeUserInfo.red || competeUserInfo.blue) {
-                whenSomeoneforceExit(
-                    competeUserInfo,
-                    socket.id,
-                    IDToUserInfo,
-                    query,
-                    io,
-                    broadcastQuery
-                );
-            }
+            whenSomeoneforceExit(
+                competeUserInfo,
+                socket.id,
+                IDToUserInfo,
+                query,
+                io,
+                broadcastQuery
+            );
 
             broadcastQuery();
         });
 
         socket.on('addUser', userInfo => {
             // 1. 添加玩家信息到map
+            // console.log(userInfo);
             const dataWithID = userInfo;
             dataWithID.sockID = socket.id;
             IDToUserInfo.set(socket.id, dataWithID);
@@ -158,6 +164,7 @@ export const createWebsocket = httpServer => {
                     socket.emit('inQueryOrGoToSpectate');
                 }
             }
+            console.log('query',query);
             broadcastQuery();
         });
 
@@ -184,12 +191,15 @@ export const createWebsocket = httpServer => {
             competeUserInfo.red.ID === socket.id
                 ? io.to(competeUserInfo.blue.ID).emit('moveChessInfo', MEInfo)
                 : io.to(competeUserInfo.red.ID).emit('moveChessInfo', MEInfo);
-            
-            io.except([competeUserInfo.red.ID,competeUserInfo.blue.ID]).emit('spectateChessMove',{MEInfo,competeUserInfo});
+
+            io.except([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
+                'spectateChessMove',
+                { MEInfo, competeUserInfo }
+            );
         });
 
         socket.on('turnSwitch', Turn => {
-            io.emit('oriTurn',Turn);
+            io.emit('oriTurn', Turn);
         });
 
         socket.on('winner', () => {
@@ -263,7 +273,7 @@ export const createWebsocket = httpServer => {
                 }
             }
             broadcastQuery();
-            io.emit('spectateSomeoneWin',competeUserInfo);
+            io.emit('spectateSomeoneWin', competeUserInfo);
         });
 
         socket.on('boardmessage', data => {
@@ -287,8 +297,8 @@ export const createWebsocket = httpServer => {
             }
         });
 
-        socket.on('getChessboardStatus',() => {
-            socket.emit('cbStatus',competeUserInfo);
-        })
+        socket.on('getChessboardStatus', () => {
+            socket.emit('cbStatus', competeUserInfo);
+        });
     });
 };
