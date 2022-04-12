@@ -207,7 +207,7 @@ export const createWebsocket = httpServer => {
 
             competeUserInfo.chessBoard = chessBoard;
 
-            io.except([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
+            io.emit(
                 'spectateChessMove',
                 { MEInfo, competeUserInfo }
             );
