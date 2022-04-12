@@ -49,7 +49,7 @@ export const createWebsocket = httpServer => {
                 // console.log('item',item);
                 // console.log('index',index);
                 const eachUserInfo = lodash.cloneDeep(IDToUserInfo.get(item));
-                if(!!eachUserInfo){
+                if (!!eachUserInfo) {
                     delete eachUserInfo['sockID'];
                     newQuery.push(eachUserInfo);
                 }
@@ -71,12 +71,12 @@ export const createWebsocket = httpServer => {
             // 删map和Query中用户数据
             IDToUserInfo.delete(socket.id);
 
-            console.log("recentq\n",query);
+            console.log('recentq\n', query);
             for (let i = 0; i < query.length; i++) {
                 query[i] === socket.id && query.splice(i, 1);
                 break;
             }
-            console.log("nowq\n",query);
+            console.log('nowq\n', query);
 
             console.log(IDToUserInfo);
 
@@ -97,84 +97,85 @@ export const createWebsocket = httpServer => {
         socket.on('addUser', userInfo => {
             // 1. 添加玩家信息到map
             // console.log(userInfo);
-            const dataWithID = userInfo;
-            dataWithID.sockID = socket.id;
-            IDToUserInfo.set(socket.id, dataWithID);
-
-            // if(IDToUserInfo.size === 1){
-            //     // 等待一名玩家加入
-            //     competeUserInfo.redID = socket.id;
-            //     competeUserInfo.redName = userInfo.myname;
-            //     console.log(competeUserInfo);
-            //     socket.emit("waitforjoin","lalala");
-
-            // }else if(IDToUserInfo.size === 2){
-            //     // 两人直接开始游戏
-            //     competeUserInfo.blueID = socket.id;
-            //     competeUserInfo.blueName = userInfo.myname;
-
-            //     console.log("nowcompeteInfo",competeUserInfo);
-
-            //     io.to(socket.id).emit("toBeReady",competeUserInfo);
-            //     // 第一位开始游戏
-
-            //     io.to(competeUserInfo.redID).emit("toBeReady",competeUserInfo);
-            // }else{
-            //     //进入观战室内等待
-            //     socket.emit("waitCurrGameEnd");
-            // }
-
-            query.push(socket.id);
-
-            if (query.length === 1) {
-                // 等待一名玩家加入
-                // 由于游戏结束后剩余那一名玩家会被移回到队列，所以addUser时间触发之后，
-                // 只有游戏没开始的时候，队列长度为可能为1
-                // 另一种情况是游戏开始的时候，加进来的为队列第一个的用户，这种情况需要让他等待
-                !competeUserInfo.full
-                    ? socket.emit('waitforjoin')
-                    : socket.emit('inQueryOrGoToSpectate');
-            } else if (query.length > 1) {
-                // full flag 为false 代表数组不满
-                if (!competeUserInfo.full) {
-                    // 红方空则填入红方位置
-                    if (!competeUserInfo.red) {
-                        competeUserInfo.red = {
-                            ID: query[0],
-                            name: IDToUserInfo.get(query[0]).myname,
-                        };
-
-                        query.shift();
-                        console.log('redAdd');
+            if(!IDToUserInfo.has(socket.id)){
+                const dataWithID = userInfo;
+                dataWithID.sockID = socket.id;
+                IDToUserInfo.set(socket.id, dataWithID);
+    
+                // if(IDToUserInfo.size === 1){
+                //     // 等待一名玩家加入
+                //     competeUserInfo.redID = socket.id;
+                //     competeUserInfo.redName = userInfo.myname;
+                //     console.log(competeUserInfo);
+                //     socket.emit("waitforjoin","lalala");
+    
+                // }else if(IDToUserInfo.size === 2){
+                //     // 两人直接开始游戏
+                //     competeUserInfo.blueID = socket.id;
+                //     competeUserInfo.blueName = userInfo.myname;
+    
+                //     console.log("nowcompeteInfo",competeUserInfo);
+    
+                //     io.to(socket.id).emit("toBeReady",competeUserInfo);
+                //     // 第一位开始游戏
+    
+                //     io.to(competeUserInfo.redID).emit("toBeReady",competeUserInfo);
+                // }else{
+                //     //进入观战室内等待
+                //     socket.emit("waitCurrGameEnd");
+                // }
+    
+                query.push(socket.id);
+    
+                if (query.length === 1) {
+                    // 等待一名玩家加入
+                    // 由于游戏结束后剩余那一名玩家会被移回到队列，所以addUser时间触发之后，
+                    // 只有游戏没开始的时候，队列长度为可能为1
+                    // 另一种情况是游戏开始的时候，加进来的为队列第一个的用户，这种情况需要让他等待
+                    !competeUserInfo.full
+                        ? socket.emit('waitforjoin')
+                        : socket.emit('inQueryOrGoToSpectate');
+                } else if (query.length > 1) {
+                    // full flag 为false 代表数组不满
+                    if (!competeUserInfo.full) {
+                        // 红方空则填入红方位置
+                        if (!competeUserInfo.red) {
+                            competeUserInfo.red = {
+                                ID: query[0],
+                                name: IDToUserInfo.get(query[0]).myname,
+                            };
+    
+                            query.shift();
+                            console.log('redAdd');
+                        }
+                        // 蓝方空则填入蓝方位置
+                        if (!competeUserInfo.blue) {
+                            competeUserInfo.blue = {
+                                ID: query[0],
+                                name: IDToUserInfo.get(query[0]).myname,
+                            };
+    
+                            query.shift();
+                            console.log('blueAdd');
+                        }
+                        // competeUserInfo已填满,可以开始准备
+                        competeUserInfo.full = true;
+                        io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
+                            'toBeReady',
+                            competeUserInfo
+                        );
+    
+                        console.log(competeUserInfo);
+                    } else {
+                        socket.emit('inQueryOrGoToSpectate');
                     }
-                    // 蓝方空则填入蓝方位置
-                    if (!competeUserInfo.blue) {
-                        competeUserInfo.blue = {
-                            ID: query[0],
-                            name: IDToUserInfo.get(query[0]).myname,
-                        };
-
-                        query.shift();
-                        console.log('blueAdd');
-                    }
-                    // competeUserInfo已填满,可以开始准备
-                    competeUserInfo.full = true;
-                    io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
-                        'toBeReady',
-                        competeUserInfo
-                    );
-
-                    console.log(competeUserInfo);
-                } else {
-                    socket.emit('inQueryOrGoToSpectate');
                 }
+                console.log('query', query);
+                broadcastQuery();
             }
-            console.log('query',query);
-            broadcastQuery();
         });
 
-        socket.on('i-am-ready', readyFlag => {
-            console.log(readyFlag);
+        socket.on('i-am-ready', () => {
             competeUserInfo.red.ID === socket.id && (competeUserInfo.redReady = true);
             competeUserInfo.blue.ID === socket.id && (competeUserInfo.blueReady = true);
 
@@ -186,9 +187,13 @@ export const createWebsocket = httpServer => {
                         Turn: 'red',
                     }
                 );
-                io.emit('queryInfo',competeUserInfo);
                 console.log(competeUserInfo);
             }
+
+            io.to([competeUserInfo.red.ID, competeUserInfo.blue.ID]).emit(
+                'cbStatus',
+                competeUserInfo
+            );
         });
 
         socket.on('chessMESend', MEInfo => {
@@ -306,6 +311,5 @@ export const createWebsocket = httpServer => {
         socket.on('getChessboardStatus', () => {
             socket.emit('cbStatus', competeUserInfo);
         });
-
     });
 };
